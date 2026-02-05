@@ -6,7 +6,7 @@ namespace EmailVerifyService.Business
     public class ServiceBaseFunctionality : FunctionalityBaseController
     {
 
-        internal async Task<CustomResponse> LogOperation(Dictionary<string, object> operationRequest, Dictionary<string, object> operationResponse, Guid? sessionId = null)
+        internal async Task<CustomResponse> LogOperation(Dictionary<string, object> operationRequest, Dictionary<string, object> operationResponse, Guid? token = null)
         {
             try
             {
@@ -23,7 +23,7 @@ namespace EmailVerifyService.Business
                     response += string.Concat(item.Key, " : ", JsonConvert.SerializeObject(item.Value));
                 }
                 // create a new operation log object
-                OperationLog newLogOperation = new OperationLog(sessionId: sessionId, operationDate: DateTime.Now, request: request, response: response);
+                OperationLog newLogOperation = new OperationLog(operationDate: DateTime.Now, request: request, response: response);
                 // save the operation log object
                 using (var context = new Models.EmailVerifyServiceDbContext())
                 {
@@ -31,7 +31,7 @@ namespace EmailVerifyService.Business
                     var newLog = Mapster.TypeAdapter.Adapt<Models.OperationLog>(newLogOperation);
                     context.OperationLogs.Add(newLog);
                     await context.SaveChangesAsync();
-                    return new CustomResponse(statusCode: StatusCodes.Status200OK, message: "Data saved successfully.", userId: new Guid(), sessionId: sessionId, data: newLog.OperationId);
+                    return new CustomResponse(statusCode: StatusCodes.Status200OK, message: "Data saved successfully.", token: new Guid());
                 }
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace EmailVerifyService.Business
                     response += string.Concat(item.Key, " : ", JsonConvert.SerializeObject(item.Value));
                 }
                 // create a new operation log object
-                OperationLog newLogOperation = new OperationLog(sessionId: sessionId, operationDate: DateTime.Now, request: request, response: response);
+                OperationLog newLogOperation = new OperationLog(operationDate: DateTime.Now, request: request, response: response);
                 // save the operation log object
                 using (var context = new Models.EmailVerifyServiceDbContext())
                 {

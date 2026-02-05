@@ -17,12 +17,12 @@ public partial class EmailVerifyServiceDbContext : DbContext
 
     public virtual DbSet<OperationLog> OperationLogs { get; set; }
 
-    public virtual DbSet<SessionLog> SessionLogs { get; set; }
+    public virtual DbSet<StatusCode> StatusCodes { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<VerifyCode> VerifyCodes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-{
+    {
         var config = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json")
@@ -30,54 +30,41 @@ public partial class EmailVerifyServiceDbContext : DbContext
         var connectionString = config.GetConnectionString("DefaultConnection");
         optionsBuilder.UseSqlServer(connectionString);
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<OperationLog>(entity =>
         {
-            entity.HasKey(e => e.OperationId).HasName("PK__Operatio__A4F5FC646784F93B");
+            entity.HasKey(e => e.OperationId).HasName("PK__Operatio__A4F5FC64B675C3A4");
 
             entity.ToTable("OperationLog");
 
             entity.Property(e => e.OperationId).HasColumnName("OperationID");
             entity.Property(e => e.OperationDate).HasColumnType("datetime");
-            entity.Property(e => e.SessionId).HasColumnName("SessionID");
-
-            entity.HasOne(d => d.Session).WithMany(p => p.OperationLogs)
-                .HasForeignKey(d => d.SessionId)
-                .HasConstraintName("FK__Operation__Respo__2B3F6F97");
         });
 
-        modelBuilder.Entity<SessionLog>(entity =>
+        modelBuilder.Entity<StatusCode>(entity =>
         {
-            entity.HasKey(e => e.SessionId).HasName("PK__SessionL__C9F49270F8CBF5C6");
+            entity.HasKey(e => e.Id).HasName("PK__StatusCo__3214EC27F11C66BB");
 
-            entity.ToTable("SessionLog");
-
-            entity.Property(e => e.SessionId)
-                .ValueGeneratedNever()
-                .HasColumnName("SessionID");
-            entity.Property(e => e.EndSession).HasColumnType("datetime");
-            entity.Property(e => e.InitSession).HasColumnType("datetime");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
-
-            entity.HasOne(d => d.User).WithMany(p => p.SessionLogs)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__SessionLo__EndSe__286302EC");
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.StatusDescription).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<VerifyCode>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC0019B3D9");
+            entity.HasKey(e => e.Id).HasName("PK__VerifyCo__3214EC27EB0703C6");
 
-            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456FD7CED62").IsUnique();
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Code).HasMaxLength(20);
+            entity.Property(e => e.EmailAddress).HasMaxLength(100);
+            entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+            entity.Property(e => e.OperationDate).HasColumnType("datetime");
+            entity.Property(e => e.VerifyStatus).HasDefaultValue(1);
 
-            entity.Property(e => e.UserId)
-                .ValueGeneratedNever()
-                .HasColumnName("UserID");
-            entity.Property(e => e.IsDeleted)
-                .HasDefaultValue(false)
-                .HasColumnName("isDeleted");
-            entity.Property(e => e.UserName).HasMaxLength(50);
+            entity.HasOne(d => d.VerifyStatusNavigation).WithMany(p => p.VerifyCodes)
+                .HasForeignKey(d => d.VerifyStatus)
+                .HasConstraintName("FK__VerifyCod__Verif__29572725");
         });
 
         OnModelCreatingPartial(modelBuilder);

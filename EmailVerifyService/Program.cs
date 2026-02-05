@@ -30,7 +30,8 @@ builder.Services.AddApiVersioning(setup =>
 });
 
 builder.Services.AddScoped<FunctionalityBaseController>();
-builder.Services.AddScoped<UserFunctionality>();
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddScoped<VerfyCodeFunctionality>();
 builder.Services.AddScoped<ServiceBaseFunctionality>();
 builder.Services.Configure<RateLimitingOptions>(
     builder.Configuration.GetSection("RateLimiting"));

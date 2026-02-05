@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ExceptionManagement;
-using WebApiProjectBase.Business;
-using WebApiProjectBase.Models;
+using EmailVerifyService.Business;
+using EmailVerifyService.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApiProjectBase.Controllers.Implementation
+namespace EmailVerifyService.Controllers.Implementation
 {
     [ApiVersion("0.1")]
     [ApiController]

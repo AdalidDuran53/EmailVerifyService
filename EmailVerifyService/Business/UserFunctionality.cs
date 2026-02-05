@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ExceptionManagement;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApiProjectBase.Business
+namespace EmailVerifyService.Business
 {
     public class UserFunctionality : FunctionalityBaseController
     {
@@ -19,7 +19,7 @@ namespace WebApiProjectBase.Business
                 // validate the user object
                 this.ValidateModel(newUser);
                 // save the user object
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // check for duplicate user names
                     var isInvalidUserName = await context.Users.AnyAsync(s => s.UserName.Equals(newUser.UserName));
@@ -61,7 +61,7 @@ namespace WebApiProjectBase.Business
                 // validate the user object
                 this.ValidateModel(DataUser);
                 // check the user credentials
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // find the user by user name
                     var user = await context.Users
@@ -93,7 +93,7 @@ namespace WebApiProjectBase.Business
             try
             {
                 await this.ValidateSession(userId, sessionId);
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // find the user by user name
                     var user = await context.Users
@@ -122,7 +122,7 @@ namespace WebApiProjectBase.Business
             try
             {
                 await this.ValidateSession(userId, sessionId);
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // find the user by user name
                     var user = await context.Users

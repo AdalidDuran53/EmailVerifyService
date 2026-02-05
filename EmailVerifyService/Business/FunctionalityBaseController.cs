@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ExceptionManagement;
 using System.Security.Cryptography;
 
-namespace WebApiProjectBase.Business
+namespace EmailVerifyService.Business
 {
     public class FunctionalityBaseController : Controller
     {
@@ -69,7 +69,7 @@ namespace WebApiProjectBase.Business
                 SessionLog sessionLog = new SessionLog(userId: userId, sessionId: Guid.NewGuid(), initSession: DateTime.Now);
 
                 // save the operation log object
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     var data = CloseAllSession(userId, sessionLog.SessionId);
                     // map the operation log object to the entity model
@@ -93,7 +93,7 @@ namespace WebApiProjectBase.Business
         {
             try
             {
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
 
                     // init data list
@@ -125,7 +125,7 @@ namespace WebApiProjectBase.Business
         {
             try
             {
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // find the session log by session id
                     var sessionLog = await context.SessionLogs.FirstOrDefaultAsync(s => s.SessionId == sessionId && s.EndSession == null);
@@ -164,7 +164,7 @@ namespace WebApiProjectBase.Business
 
         protected virtual async Task ValidateSession(Guid userId, Guid sessionId)
         {
-            using (var context = new Models.WebApiProjectBaseDbContext())
+            using (var context = new Models.EmailVerifyServiceDbContext())
             {
                 // find the user by user name
                 var user = await context.Users

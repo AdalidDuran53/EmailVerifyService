@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApiProjectBase.Controllers
+namespace EmailVerifyService.Controllers
 {
     [ApiController]
     [Route("[controller]")]

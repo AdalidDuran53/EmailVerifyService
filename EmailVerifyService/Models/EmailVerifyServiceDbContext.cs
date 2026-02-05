@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApiProjectBase.Models;
+namespace EmailVerifyService.Models;
 
-public partial class WebApiProjectBaseDbContext : DbContext
+public partial class EmailVerifyServiceDbContext : DbContext
 {
-    public WebApiProjectBaseDbContext()
+    public EmailVerifyServiceDbContext()
     {
     }
 
-    public WebApiProjectBaseDbContext(DbContextOptions<WebApiProjectBaseDbContext> options)
+    public EmailVerifyServiceDbContext(DbContextOptions<EmailVerifyServiceDbContext> options)
         : base(options)
     {
     }

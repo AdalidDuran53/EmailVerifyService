@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebApiProjectBase.Models;
+namespace EmailVerifyService.Models;
 
 public partial class User
 {

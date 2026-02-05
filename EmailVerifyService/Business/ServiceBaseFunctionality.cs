@@ -1,7 +1,7 @@
 ﻿using Domain;
 using Newtonsoft.Json;
 
-namespace WebApiProjectBase.Business
+namespace EmailVerifyService.Business
 {
     public class ServiceBaseFunctionality : FunctionalityBaseController
     {
@@ -25,7 +25,7 @@ namespace WebApiProjectBase.Business
                 // create a new operation log object
                 OperationLog newLogOperation = new OperationLog(sessionId: sessionId, operationDate: DateTime.Now, request: request, response: response);
                 // save the operation log object
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // map the operation log object to the entity model
                     var newLog = Mapster.TypeAdapter.Adapt<Models.OperationLog>(newLogOperation);
@@ -59,7 +59,7 @@ namespace WebApiProjectBase.Business
                 // create a new operation log object
                 OperationLog newLogOperation = new OperationLog(sessionId: sessionId, operationDate: DateTime.Now, request: request, response: response);
                 // save the operation log object
-                using (var context = new Models.WebApiProjectBaseDbContext())
+                using (var context = new Models.EmailVerifyServiceDbContext())
                 {
                     // map the operation log object to the entity model
                     var newLog = Mapster.TypeAdapter.Adapt<Models.OperationLog>(newLogOperation);

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using OperationManagementService.Security;
 using System.Threading.RateLimiting;
-using WebApiProjectBase.Business;
-using WebApiProjectBase.Filters;
+using EmailVerifyService.Business;
+using EmailVerifyService.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,10 +1,12 @@
 using Domain;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using OperationManagementService.Security;
-using System.Threading.RateLimiting;
 using EmailVerifyService.Business;
 using EmailVerifyService.Filters;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using OperationManagementService.Security;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,8 @@ builder.Services.AddScoped<FunctionalityBaseController>();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<VerfyCodeFunctionality>();
 builder.Services.AddScoped<ServiceBaseFunctionality>();
+builder.Services.AddScoped<RazorViewToStringRenderer>();
+builder.Services.AddControllersWithViews();
 builder.Services.Configure<RateLimitingOptions>(
     builder.Configuration.GetSection("RateLimiting"));
 

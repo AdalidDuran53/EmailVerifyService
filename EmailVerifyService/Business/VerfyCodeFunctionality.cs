@@ -20,14 +20,14 @@ namespace EmailVerifyService.Business
             _settings = settings.Value;
             _renderer = renderer;
         }
-        public async Task<CustomResponse> RequestVerifyCode(string emailAddress, Guid appToken)
+        public async Task<CustomResponse> RequestVerifyCode(string emailAddress, Guid? appToken)
         {
             try
             {
 
                 var code = new Random().Next(100000, 999999).ToString();
                 // build the Verification Code object
-                VerifyCode newVerifyCode = new VerifyCode(code: code, token: Guid.NewGuid(), appToken: appToken, emailAddress: emailAddress, operationDate: DateTime.Now, expirationDate: DateTime.Now.AddMinutes(15), verifyStatus: 1);
+                VerifyCode newVerifyCode = new VerifyCode(code: code, token: Guid.NewGuid(), appToken: appToken?? Guid.Empty, emailAddress: emailAddress, operationDate: DateTime.Now, expirationDate: DateTime.Now.AddMinutes(15), verifyStatus: 1);
                 // save the Verification Code object
                 using (var context = new Models.EmailVerifyServiceDbContext())
                 {
@@ -56,7 +56,7 @@ namespace EmailVerifyService.Business
                 if (ex is OperationException)
                     throw ex;
                 // otherwise, throw a general error
-                var exception = this._errorService.GetError("OMS-GENERAL-ERROR");
+                var exception = this._errorService.GetError("EVS-GENERAL-ERROR");
                 throw new OperationException(errorCode: exception.Code, message: exception.Message, details: exception.Details, new Guid());
             }
         }
@@ -82,6 +82,45 @@ namespace EmailVerifyService.Business
             };
 
             await smtp.SendMailAsync(mail);
+        }
+
+        public async Task<CustomResponse> ValidateVerifyCode(string emailAddress, Guid Token, string verifyCode)
+        {
+            try
+            {
+                // build the Verification Code object
+                VerifyCode newVerifyCode = new VerifyCode(code: verifyCode, token: Guid.NewGuid(), appToken: Guid.Empty, emailAddress: emailAddress, operationDate: DateTime.Now, expirationDate: DateTime.Now.AddMinutes(15), verifyStatus: 1);
+                // save the Verification Code object
+                using (var context = new Models.EmailVerifyServiceDbContext())
+                {
+                    // check for duplicate Verification Code
+                    var verifyCodes = await context.VerifyCodes.FirstOrDefaultAsync(s => s.EmailAddress.Equals(newVerifyCode.EmailAddress) && s.Token.Equals(Token) && s.VerifyStatus == (int)VerifyStatusCodes.pending);
+                    if (verifyCodes != null && verifyCodes.Code.Equals(verifyCode)
+                        && verifyCodes.ExpirationDate > DateTime.Now)
+                    {
+                        verifyCodes.VerifyStatus = (int)VerifyStatusCodes.Verified;
+                        context.VerifyCodes.Update(verifyCodes);
+                        await context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        var exception = this._errorService.GetError("EVS-CODE-ERROR");
+                        throw new OperationException(errorCode: exception.Code, message: exception.Message, details: exception.Details, new Guid());
+                    }
+                }
+                // return the result
+                var result = new CustomResponse(statusCode: StatusCodes.Status201Created, message: "validated verify code successfully.", token: newVerifyCode.Token);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // if the exception is an OperationException, rethrow it
+                if (ex is OperationException)
+                    throw ex;
+                // otherwise, throw a general error
+                var exception = this._errorService.GetError("EVS-GENERAL-ERROR");
+                throw new OperationException(errorCode: exception.Code, message: exception.Message, details: exception.Details, new Guid());
+            }
         }
     }
 }

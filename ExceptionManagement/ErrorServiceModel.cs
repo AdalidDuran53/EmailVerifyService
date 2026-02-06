@@ -38,10 +38,17 @@
         {
             // define all error items here
             #region General
-            errors.Add("OMS-GENERAL-ERROR", new ErroritemServiceModel(
-                code: "OMS-GENERAL-ERROR", 
+            errors.Add("EVS-GENERAL-ERROR", new ErroritemServiceModel(
+                code: "EVS-GENERAL-ERROR", 
                 message: "unexpected error.", 
                 details: "An unexpected error has occurred in the service. Please try again later or contact the administrator if the problem persists."));
+            #endregion
+
+            #region VerifyCode
+            errors.Add("EVS-CODE-ERROR", new ErroritemServiceModel(
+                code: "EVS-CODE-ERROR",
+                message: "verify code invalid.",
+                details: "verify code invalid."));
             #endregion
 
         }

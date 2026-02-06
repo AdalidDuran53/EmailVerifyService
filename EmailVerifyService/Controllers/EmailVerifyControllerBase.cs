@@ -17,7 +17,7 @@ namespace EmailVerifyService.Controllers
         [SwaggerResponse(statusCode: 201, type: typeof(ActionResult), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(ActionResult), description: "Bab Request")]
         [SwaggerResponse(statusCode: 401, type: typeof(ActionResult), description: "Unauthorized")]
-        public abstract Task<IActionResult> RequestVerifyCode([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$")] string version, [Required] Guid appToken, [Required, EmailAddress] string emailAddress);
+        public abstract Task<IActionResult> RequestVerifyCode([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$")] string version, [Required, EmailAddress] string emailAddress, Guid? appToken);
 
         [HttpPost]
         [EnableRateLimiting("IpPolicy")]
@@ -26,7 +26,7 @@ namespace EmailVerifyService.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(ActionResult), description: "Ok")]
         [SwaggerResponse(statusCode: 400, type: typeof(ActionResult), description: "Bab Request")]
         [SwaggerResponse(statusCode: 401, type: typeof(ActionResult), description: "Unauthorized")]
-        public abstract Task<IActionResult> ValidateVerifyCode([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$")] string version, [Required, EmailAddress] string emailAddress, [Required] Guid Token, [Required] string verifyCode );
+        public abstract Task<IActionResult> ValidateVerifyCode([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$")] string version, [Required, EmailAddress] string emailAddress, [Required] Guid token, [Required] string verifyCode );
 
     }
 }

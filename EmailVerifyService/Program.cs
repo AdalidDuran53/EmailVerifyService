@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.OpenApi;
 using OperationManagementService.Security;
+using Swashbuckle.AspNetCore.Filters;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,32 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen(options => options.OperationFilter<AuthenticationKeyHeader>());
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "EmailVerifyService",
+        Version = "v1",
+        Description = "API para verificación de correos"
+    });
+});
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.ExampleFilters();
+});
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CustomResponseCreatedExample>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CustomResponseBadRequestExample>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CustomResponseOKExample>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<RequestVerifyCodeExample>();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+});
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(CustomAuthenticationHandler.SchemaName)
@@ -91,7 +119,7 @@ app.Use(async (context, next) => {
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmailVerifyService v1"); });
     app.UseSwagger();
 }
 

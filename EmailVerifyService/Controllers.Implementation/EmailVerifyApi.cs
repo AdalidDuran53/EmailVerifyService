@@ -27,7 +27,10 @@ namespace EmailVerifyService.Controllers.Implementation
 
         [HttpPost]
         [Route("~/{version::apiVersion}/EmailVerify/RequestVerifyCode")]
-        public async override Task<IActionResult> RequestVerifyCode([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$"), Required] string version, [Required, EmailAddress] string emailAddress, Guid? appToken = null)
+        public async override Task<IActionResult> RequestVerifyCode(
+            [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$"), Required] string version, 
+            [Required, EmailAddress] string emailAddress, 
+            Guid? appToken = null)
         {
             // Log the request
             Dictionary<string, object> request = new Dictionary<string, object> { { "RequestVerifyCodeRequest", new object[] { "version: " + version, "emailAddress: " + emailAddress } } };
@@ -55,7 +58,10 @@ namespace EmailVerifyService.Controllers.Implementation
 
         [HttpPost]
         [Route("~/{version::apiVersion}/EmailVerify/ValidateVerifyCode")]
-        public async override Task<IActionResult> ValidateVerifyCode([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$"), Required] string version, [Required] string emailAddress, [Required] Guid token, [Required] string verifyCode)
+        public async override Task<IActionResult> ValidateVerifyCode(
+            [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$"), Required] string version, 
+            [Required] string emailAddress, [Required] Guid token, 
+            [Required] string verifyCode)
         {
             // Log the request
             Dictionary<string, object> request = new Dictionary<string, object> { { "RequestValidateVerifyCodeRequest", new object[] { "version: " + version, "emailAddress: " + emailAddress } } };

@@ -38,7 +38,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CustomResponseCreatedExample>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CustomResponseBadRequestExample>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CustomResponseOKExample>();
-builder.Services.AddSwaggerExamplesFromAssemblyOf<RequestVerifyCodeExample>();
 
 builder.Services.AddSwaggerGen(c =>
 {

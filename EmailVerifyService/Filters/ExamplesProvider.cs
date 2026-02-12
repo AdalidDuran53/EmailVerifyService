@@ -24,18 +24,4 @@ namespace EmailVerifyService.Filters
         public CustomResponse GetExamples()
             => new CustomResponse(statusCode: StatusCodes.Status200OK, message: "validated verify code successfully.", token: Guid.Empty);
     }
-
-    public class RequestVerifyCodeExample : IExamplesProvider<object>
-    {
-        public object GetExamples()
-            => new
-            {
-                version = "1.0",
-                emailAddress = "user@example.com",
-                appToken = Guid.NewGuid(),
-                AuthenticationKey = Guid.NewGuid()
-            };
-    }
-
-
 }

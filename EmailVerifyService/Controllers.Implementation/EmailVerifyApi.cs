@@ -1,10 +1,14 @@
 ﻿using Domain;
+using EmailVerifyService.Business;
+using EmailVerifyService.Filters;
+using EmailVerifyService.Models;
+using ExceptionManagement;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using ExceptionManagement;
-using EmailVerifyService.Business;
-using EmailVerifyService.Models;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
 
 namespace EmailVerifyService.Controllers.Implementation
@@ -27,6 +31,10 @@ namespace EmailVerifyService.Controllers.Implementation
 
         [HttpPost]
         [Route("~/{version::apiVersion}/EmailVerify/RequestVerifyCode")]
+        [SwaggerResponse(statusCode: StatusCodes.Status201Created, type: typeof(CustomResponse), description: "Ok")]
+        [SwaggerResponseExample(StatusCodes.Status201Created, typeof(CustomResponseOKExample))]
+        [SwaggerResponse(statusCode: StatusCodes.Status400BadRequest, type: typeof(ErrorResponse), description: "Bab Request")]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CustomResponseBadRequestExample))]
         public async override Task<IActionResult> RequestVerifyCode(
             [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$"), Required] string version, 
             [Required, EmailAddress] string emailAddress, 
@@ -43,7 +51,7 @@ namespace EmailVerifyService.Controllers.Implementation
                 // Log the operation
                 await _serviceBaseFunctionality.LogOperation(request, response, result.Token);
                 // return the result
-                return Ok(result);
+                return this.Created(String.Empty, result);
             }
             catch (Exception ex)
             {
@@ -52,12 +60,16 @@ namespace EmailVerifyService.Controllers.Implementation
                 await _serviceBaseFunctionality.LogOperation(request, response);
                 // if the exception is an OperationException, return a bad request with the error details
                 OperationException excep = ((OperationException)ex);
-                return this.BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, code = excep.ErrorCode, message = excep.Message, details = excep.Details });
+                return this.BadRequest(new ErrorResponse(statusCode: StatusCodes.Status400BadRequest, code: excep.ErrorCode, message: excep.Message, details: excep.Details));
             }
         }
 
         [HttpPost]
         [Route("~/{version::apiVersion}/EmailVerify/ValidateVerifyCode")]
+        [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(CustomResponse), description: "Ok")]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(CustomResponseOKExample))]
+        [SwaggerResponse(statusCode: StatusCodes.Status400BadRequest, type: typeof(ErrorResponse), description: "Bab Request")]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CustomResponseBadRequestExample))]
         public async override Task<IActionResult> ValidateVerifyCode(
             [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<major>[0-9]+)$"), Required] string version, 
             [Required] string emailAddress, [Required] Guid token, 
@@ -74,7 +86,7 @@ namespace EmailVerifyService.Controllers.Implementation
                 // Log the operation
                 await _serviceBaseFunctionality.LogOperation(request, response, result.Token);
                 // return the result
-                return Ok(result);
+                return result;
             }
             catch (Exception ex)
             {
@@ -83,7 +95,7 @@ namespace EmailVerifyService.Controllers.Implementation
                 await _serviceBaseFunctionality.LogOperation(request, response);
                 // if the exception is an OperationException, return a bad request with the error details
                 OperationException excep = ((OperationException)ex);
-                return this.BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, code = excep.ErrorCode, message = excep.Message, details = excep.Details });
+                return this.BadRequest(new ErrorResponse(statusCode: StatusCodes.Status400BadRequest, code: excep.ErrorCode, message: excep.Message, details: excep.Details));
             }
         }
     }

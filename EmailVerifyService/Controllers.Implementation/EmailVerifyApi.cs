@@ -86,7 +86,7 @@ namespace EmailVerifyService.Controllers.Implementation
                 // Log the operation
                 await _serviceBaseFunctionality.LogOperation(request, response, result.Token);
                 // return the result
-                return result;
+                return Ok(result);
             }
             catch (Exception ex)
             {
